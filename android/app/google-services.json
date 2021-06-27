@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "74638561135",
+    "project_id": "ican-system-rils",
+    "storage_bucket": "ican-system-rils.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74638561135:android:debcf6871591638ed4629a",
+        "android_client_info": {
+          "package_name": "com.example.ican_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74638561135-d2jif6q038ftgftgu14pbc3p2p5398r8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHk_cXrcRSFNsTct1xAJuI4QSkPhInFJ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74638561135-d2jif6q038ftgftgu14pbc3p2p5398r8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
