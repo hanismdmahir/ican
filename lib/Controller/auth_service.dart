@@ -11,4 +11,11 @@ class AuthService {
   Future sendPasswordResetEmail(String email) async {
     return _firebaseAuth.sendPasswordResetEmail(email: email);
   }
+
+  Future<User> signInEmailPassword(String email, String password) async{
+    return (await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      )).user;
+  }
 }

@@ -2,17 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ican_system/CommunicationPage/ListInteractionReportForDoctor.dart';
 import 'package:ican_system/Model/InteractionModel.dart';
+import 'package:ican_system/Model/TextEditorModel.dart';
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-final TextEditingController _date = TextEditingController();
-final TextEditingController _navigatorName = TextEditingController();
-final TextEditingController _address = TextEditingController();
-final TextEditingController _pName = TextEditingController();
-final TextEditingController _pAddress = TextEditingController();
-final TextEditingController _pDob = TextEditingController();
-final TextEditingController _diagnosis = TextEditingController();
-final TextEditingController _note = TextEditingController();
-final TextEditingController _pGender = TextEditingController();
+TextEditor _controller = new TextEditor();
+
 final listOfUser = ["Female", "Male"];
 String dropdownValue = 'Male';
 
@@ -65,7 +59,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _date,
+                          controller: _controller.date,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.calendar_today),
                               labelText: 'Date of Interaction :',
@@ -77,7 +71,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _navigatorName,
+                          controller: _controller.navigatorName,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.person),
                               labelText: 'Navigator Name :',
@@ -89,7 +83,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _address,
+                          controller: _controller.address,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.home),
                               labelText: 'Interaction Address :',
@@ -109,7 +103,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _pName,
+                          controller: _controller.pname,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.person_outlined),
                               labelText: 'Name :',
@@ -121,7 +115,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _pAddress,
+                          controller: _controller.paddress,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.home_outlined),
                               labelText: 'Address :',
@@ -136,7 +130,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                         SizedBox(
                           width: 150,
                           child: new TextField(
-                              controller: _pDob,
+                              controller: _controller.pdob,
                               decoration: InputDecoration(
                                   icon:
                                       const Icon(Icons.calendar_today_outlined),
@@ -146,7 +140,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                         SizedBox(
                           width: 150,
                           child: new TextField(
-                              controller: _pGender,
+                              controller: _controller.pgender,
                               decoration: InputDecoration(
                                   icon: const Icon(Icons.person),
                                   labelText: 'Gender :',
@@ -160,7 +154,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _diagnosis,
+                          controller: _controller.diagnosis,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.note),
                               labelText: 'Diagnosis :',
@@ -172,7 +166,7 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: new TextFormField(
-                          controller: _note,
+                          controller: _controller.note,
                           decoration: InputDecoration(
                               icon: const Icon(Icons.note_add_outlined),
                               labelText: 'Note :',
@@ -225,14 +219,14 @@ class _CreateInteractionReportState extends State<CreateInteractionReport> {
 
 Future<void> _createInteractionReport() async {
   await FirebaseFirestore.instance.collection("patientReport").add({
-    'date': _date.text,
-    'address': _address.text,
-    'diagnosis': _diagnosis.text,
-    'navigatorName': _navigatorName.text,
-    'note': _note.text,
-    'pAddress': _pAddress.text,
-    'pDob': _pDob.text,
-    'pName': _pName.text,
-    'pGender': _pGender.text
+    'date': _controller.date.text,
+    'address': _controller.address.text,
+    'diagnosis': _controller.diagnosis.text,
+    'navigatorName': _controller.navigatorName.text,
+    'note': _controller.note.text,
+    'pAddress': _controller.paddress.text,
+    'pDob': _controller.pdob.text,
+    'pName': _controller.pname.text,
+    'pGender': _controller.pgender.text
   });
 }

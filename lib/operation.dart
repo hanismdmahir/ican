@@ -44,3 +44,11 @@ Future<void> editUserData(
 Future<void> deleteUser(DocumentSnapshot doc) async {
 //  await FirebaseFirestore.instance.collection("user").document(doc.documentID).delete();
 }
+
+Future<DocumentSnapshot> getUserData(String uid) async{
+  return await FirebaseFirestore.instance.collection("user").doc(uid).get();
+}
+
+Stream<DocumentSnapshot> getUserDataStream(String uid) {
+  return FirebaseFirestore.instance.collection("user").doc(uid).snapshots();
+}

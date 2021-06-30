@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ican_system/Model/TextEditorModel.dart';
 import 'package:ican_system/UserPage/NavigatorMainPage.dart';
 import 'package:ican_system/operation.dart';
 
@@ -9,11 +10,7 @@ class RecordPatientPage extends StatefulWidget {
 }
 
 class _RecordPatientPageState extends State<RecordPatientPage> {
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _commentController = TextEditingController();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _patientNameController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+  TextEditor _controller = new TextEditor();
 
   String _comment;
   String _title;
@@ -67,7 +64,7 @@ class _RecordPatientPageState extends State<RecordPatientPage> {
                 height: 30,
               ),
               TextFormField(
-                controller: _titleController,
+                controller: _controller.title,
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.category),
                   hintText: 'Enter Title',
@@ -84,7 +81,7 @@ class _RecordPatientPageState extends State<RecordPatientPage> {
                 height: 30,
               ),
               TextFormField(
-                controller: _dateController,
+                controller: _controller.date,
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.calendar_today),
                   hintText: 'Enter Date',
@@ -103,7 +100,7 @@ class _RecordPatientPageState extends State<RecordPatientPage> {
                 height: 30,
               ),
               TextFormField(
-                controller: _patientNameController,
+                controller: _controller.pname,
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.person),
                   hintText: 'Enter Your Patient Name',
@@ -140,7 +137,7 @@ class _RecordPatientPageState extends State<RecordPatientPage> {
                 height: 30,
               ),
               TextFormField(
-                controller: _commentController,
+                controller: _controller.comment,
                 decoration: const InputDecoration(
                   icon: const Icon(Icons.comment),
                   hintText: 'Write Your Comment',
@@ -202,10 +199,10 @@ class _RecordPatientPageState extends State<RecordPatientPage> {
 
   void _insertInteraction() async {
     setState(() {
-      _comment = _commentController.text;
-      _patientName = _patientNameController.text;
-      _date = _dateController.text;
-      _title = _titleController.text;
+      _comment = _controller.comment.text;
+      _patientName = _controller.pname.text;
+      _date = _controller.date.text;
+      _title = _controller.title.text;
     });
 
     //insertdatabase

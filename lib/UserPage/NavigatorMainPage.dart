@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ican_system/CommunicationPage/ListPatientRecord.dart';
 import 'package:ican_system/CommunicationPage/TrackInteraction.dart';
-import 'package:ican_system/HomePage.dart';
 import 'package:ican_system/Model/UserModel.dart';
 import 'package:ican_system/UserManagementPage/UpdateProfile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ican_system/UserPage/widget.dart';
+
+import '../operation.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 UserModel user = UserModel();
@@ -26,10 +28,7 @@ class _NavigatorMainPageState extends State<NavigatorMainPage> {
     final w = (MediaQuery.of(context).size.width - runSpacing * (columns - 1)) /
         columns;
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection("user")
-          .doc(_auth.currentUser.uid)
-          .snapshots(),
+      stream: getUserDataStream(_auth.currentUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: LinearProgressIndicator());
@@ -42,24 +41,7 @@ class _NavigatorMainPageState extends State<NavigatorMainPage> {
           return Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: Colors.white,
-              appBar: AppBar(
-                elevation: 0,
-                brightness: Brightness.light,
-                backgroundColor: Colors.blueAccent,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.logout),
-                    onPressed: () async {
-                      await _auth.signOut();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => HomePage()),
-                          (route) => false);
-                    },
-                  )
-                ],
-              ),
+              appBar: getAppBar(context),
               body: Container(
                 child: Column(children: <Widget>[
                   SizedBox(height: 50),
@@ -154,4 +136,6 @@ class _NavigatorMainPageState extends State<NavigatorMainPage> {
       },
     );
   }
+
+  
 }

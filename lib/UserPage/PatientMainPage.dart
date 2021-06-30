@@ -10,6 +10,9 @@ import 'package:ican_system/UserManagementPage/UpdateProfile.dart';
 import 'package:ican_system/CommunicationPage/PersonalCaretaker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ican_system/Model/UserModel.dart';
+import 'package:ican_system/UserPage/widget.dart';
+
+import '../operation.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 UserModel user = UserModel();
@@ -30,10 +33,7 @@ class _PatientMainPageState extends State<PatientMainPage> {
     final w = (MediaQuery.of(context).size.width - runSpacing * (columns - 1)) /
         columns;
     return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection("user")
-          .doc(_auth.currentUser.uid)
-          .snapshots(),
+      stream: getUserDataStream(_auth.currentUser.uid),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: LinearProgressIndicator());
@@ -46,24 +46,7 @@ class _PatientMainPageState extends State<PatientMainPage> {
           return Scaffold(
               resizeToAvoidBottomInset: false,
               backgroundColor: Colors.white,
-              appBar: AppBar(
-                elevation: 0,
-                brightness: Brightness.light,
-                backgroundColor: Colors.blueAccent,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.logout),
-                    onPressed: () async {
-                      await _auth.signOut();
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => HomePage()),
-                          (route) => false);
-                    },
-                  )
-                ],
-              ),
+              appBar: getAppBar(context),
               body: Container(
                 child: Column(children: <Widget>[
                   SizedBox(height: 50),
@@ -103,109 +86,57 @@ class _PatientMainPageState extends State<PatientMainPage> {
                   ]),
                   new Divider(height: 5.0, color: Colors.black),
                   Row(children: <Widget>[
-                    GestureDetector(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return ListResourceAvailable();
-                        },
-                      )),
-                      child: Container(
-                        width: w,
-                        height: w,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            new Image.asset(
-                              'assets/icons/reading.png',
-                              width: 50.0,
-                              height: 50.0,
-                              fit: BoxFit.cover,
-                            ),
-                            Text('Cancer & Treatment')
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return AppointmentPage();
-                        },
-                      )),
-                      child: Container(
-                        width: w,
-                        height: w,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            new Image.asset(
-                              'assets/icons/calendar.png',
-                              width: 50.0,
-                              height: 50.0,
-                              fit: BoxFit.cover,
-                            ),
-                            Text('Schedule Appointment')
-                          ],
-                        ),
-                      ),
-                    ),
+                    getMenu(context, w, 'assets/icons/reading.png', '', 1,
+                        'Cancer & Treatment'),
+                    getMenu(context, w, 'assets/icons/calendar.png', '', 2,
+                        'Schedule Appointment'),
                   ]),
                   Row(children: <Widget>[
-                    GestureDetector(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return PersonalCaretaker();
-                        },
-                      )),
-                      child: Container(
-                        width: w,
-                        height: w,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            new Image.asset(
-                              'assets/icons/connected-people.png',
-                              width: 50.0,
-                              height: 50.0,
-                              fit: BoxFit.cover,
-                            ),
-                            Text('Personal Caretaker')
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return ListInteractionRecord(user.fullname);
-                        },
-                      )),
-                      child: Container(
-                        width: w,
-                        height: w,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            new Image.asset(
-                              'assets/icons/edit.png',
-                              width: 50.0,
-                              height: 50.0,
-                              fit: BoxFit.cover,
-                            ),
-                            Text('Feedback')
-                          ],
-                        ),
-                      ),
-                    )
+                    getMenu(context, w, 'assets/icons/connected-people.png', '',
+                        3, 'Personal Caretaker'),
+                    getMenu(context, w, 'assets/icons/edit.png', user.fullname,
+                        4, 'Feedback'),
                   ])
                 ]),
               ));
         }
       },
+    );
+  }
+
+  GestureDetector getMenu(BuildContext context, double w, String icon,
+      String name, int num, String title) {
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(
+        builder: (context) {
+          if (num == 1) {
+            return ListResourceAvailable();
+          } else if (num == 2) {
+            return AppointmentPage();
+          } else if (num == 3) {
+            return PersonalCaretaker();
+          } else {
+            return ListInteractionRecord(name);
+          }
+        },
+      )),
+      child: Container(
+        width: w,
+        height: w,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            new Image.asset(
+              icon, //'assets/icons/reading.png',
+              width: 50.0,
+              height: 50.0,
+              fit: BoxFit.cover,
+            ),
+            Text(title) //'Cancer & Treatment')
+          ],
+        ),
+      ),
     );
   }
 }

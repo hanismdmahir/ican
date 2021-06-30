@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ican_system/Controller/auth_service.dart';
 import 'package:ican_system/UserManagementPage/signup.dart';
 import 'package:ican_system/UserPage/PatientMainPage.dart';
 import 'package:ican_system/UserPage/NavigatorMainPage.dart';
 import 'package:ican_system/UserPage/DoctorMainPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
+import '../operation.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -166,11 +167,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _signInWithEmailAndPassword() async {
     try {
-      final User user = (await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      ))
-          .user;
+      var auth = new AuthService();
+
+      User user = await auth.signInEmailPassword(
+          _emailController.text, _passwordController.text);
 
       if (user != null) {
         setState(() {
@@ -178,39 +178,22 @@ class _LoginPageState extends State<LoginPage> {
           _userEmail = user.email;
         });
 
-        var doc = FirebaseFirestore.instance.collection("user").doc(user.uid);
+        DocumentSnapshot userData = await getUserData(user.uid);
 
-        DocumentSnapshot value = await doc.get();
+        type = userData['userType'];
 
-        type = value['userType'];
-
-        final snackBar = SnackBar(
-          content: Text(user.email + ' Has Successfully Login ! '),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-        if (type == 'Patient') {
-          //navigate ke patient main page
-          Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) {
-              return PatientMainPage();
-            },
-          ));
-        } else if (type == 'Doctor') {
-          //navigate ke doctor main page
-          Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) {
-              return DoctorMainPage();
-            },
-          ));
-        } else if (type == 'Navigator') {
-          //navigate ke navigator main page
-          Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) {
-              return NavigatorMainPage();
-            },
-          ));
-        }
+        displaySnackBar(user.email);
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) {
+          if (type == 'Patient') {
+            //navigate ke patient main page
+            return PatientMainPage();
+          } else if (type == 'Doctor') {
+            return DoctorMainPage();
+          } else {
+            return NavigatorMainPage();
+          }
+        }));
       } else {
         setState(() {
           _success = false;
@@ -223,5 +206,12 @@ class _LoginPageState extends State<LoginPage> {
         print('Wrong password provided for that user.');
       }
     }
+  }
+
+  void displaySnackBar(String email) {
+    final snackBar = SnackBar(
+      content: Text(email + ' Has Successfully Login ! '),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
